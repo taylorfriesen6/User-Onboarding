@@ -1,14 +1,28 @@
 import {useState} from 'react';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  name: yup.string()
+    .required('Please enter a name'),
+  email: yup.string()
+    .required('Email is required')
+    .email('Please enter a valid email address')
+  password: yup.string()
+    .required('Please enter a password')
+    .min(8, 'Password must be at least 8 characters long'),
+  termsOfService: yup.string()
+    .oneOf([true], 'You must accept the terms of service'),
+});
 
 function Form(props) {
 
-  const initialUser = {
+  const initialForm = {
     name: '',
     email: '',
     password: '',
     termsOfService: false,
   };
-  const [form, setForm] = useState(initialUser);
+  const [form, setForm] = useState(initialForm);
 
   const handleChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value});
