@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import * as yup from 'yup';
 
 const schema = yup.object().shape({
@@ -10,7 +10,7 @@ const schema = yup.object().shape({
   password: yup.string()
     .required('Please enter a password')
     .min(8, 'Password must be at least 8 characters long'),
-  termsOfService: yup.string()
+  termsOfService: yup.boolean()
     .oneOf([true], 'You must accept the terms of service'),
 });
 
@@ -31,16 +31,29 @@ function Form(props) {
     termsOfService: '',
   });
 
+  const [disabled, setDisabled] = useState(true);
+
   const handleChange = (e) => {
+    // get the information about the update from the event
     const { name, type, value, checked } = e.target;
     const updatedInfo = (type === 'checkbox') ? checked : value;
+
+    // update the form
     setForm({ ...form, [name]: updatedInfo });
-    yup.reach(schema, name).validate(value).then(_ => {
+
+    // catch validation errors in the updated entry
+    yup.reach(schema, name).validate(updatedInfo).then(_ => {
       setErrors({...errors, [name]: ''});
     }).catch(err => {
       setErrors({...errors, [name]: err.errors[0]})
     });
   }
+
+  useEffect(() => {
+      // determine whether to disable submit button
+      schema.isValid(form).then(valid => setDisabled(!valid));
+  }, [form]);
+
 
   return (
     <form>
@@ -69,7 +82,7 @@ function Form(props) {
         <span className="error">{errors.termsOfService}</span>
       </p>
       <p>
-        <input type='submit'/>
+        <input type='submit' value='Submit' disabled={disabled}/>
       </p>
     </form>
   );
