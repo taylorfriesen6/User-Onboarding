@@ -25,7 +25,9 @@ function Form(props) {
   const [form, setForm] = useState(initialForm);
 
   const handleChange = (e) => {
-    setForm({...form, [e.target.name]: e.target.value});
+    const { name, type, value, checked } = e.target;
+    const updatedInfo = type === 'checkbox' ? checked : value;
+    setForm({ ...form, [name]: updatedInfo });
   }
 
   return (
@@ -40,7 +42,7 @@ function Form(props) {
         Password: <input type='password' name='password' value={form.password} onChange={handleChange}/>
       </label>
       <label>
-        I agree to the terms of service: <input type='checkbox' name='termsOfService' value={form.termsOfService} onChange={handleChange}/>
+        I agree to the terms of service: <input type='checkbox' name='termsOfService' checked={form.termsOfService} onChange={handleChange}/>
       </label>
     </form>
   );
