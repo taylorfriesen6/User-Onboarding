@@ -6,7 +6,7 @@ const schema = yup.object().shape({
     .required('Please enter a name'),
   email: yup.string()
     .required('Email is required')
-    .email('Please enter a valid email address')
+    .email('Please enter a valid email address'),
   password: yup.string()
     .required('Please enter a password')
     .min(8, 'Password must be at least 8 characters long'),
