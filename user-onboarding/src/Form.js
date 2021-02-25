@@ -14,7 +14,7 @@ const schema = yup.object().shape({
     .oneOf([true], 'You must accept the terms of service'),
 });
 
-function Form(props) {
+function Form({addUser}) {
 
   const initialForm = {
     name: '',
@@ -54,9 +54,14 @@ function Form(props) {
       schema.isValid(form).then(valid => setDisabled(!valid));
   }, [form]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addUser(form);
+    setForm(initialForm);
+  };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <p>
         <label>
           Name: <input type='text' name='name' value={form.name} onChange={handleChange}/>
